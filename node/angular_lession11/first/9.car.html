@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" ng-app="appModule">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <link rel="stylesheet" href="./node_modules/bootstrap/dist/css/bootstrap.css" >
+    <style>
+        [ng-cloak]{display: none;}
+    </style>
+</head>
+<body ng-controller="cartCtrl" >
+<table class="table table-bordered" ng-cloak>
+    <tr>
+        <th><input type="checkbox" ng-model="selectAll" ng-click="all()"/>全选</th><th>商品</th><th>单价</th><th>数量</th><th>小计</th><th>操作</th>
+    </tr>
+    <tr ng-repeat="v in products track by $index" >
+        <!--在angular中所有input元素的取值，设置值，都是从ng-model获取到的-->
+        <td><input type="checkbox" ng-model="v.isSelected"/></td>
+        <td>{{v.name}}</td>
+        <td>{{v.price}}</td>
+        <td><input type="text" ng-model="v.count"></td>
+        <td>{{v.price*v.count}}</td>
+        <td><button class="btn btn-danger" ng-click="del(v)">删除</button></td>
+<!--成功绿色 success 删除红色 danger 修改黄色 warning 蓝色 primary 默认 default-->
+    </tr>
+</table>
+<script src="node_modules/angular/angular.js"></script>
+<script>
+    var app = angular.module('appModule',[]);
+    app.controller('cartCtrl',['$scope',function ($scope) { //$scope viewModel
+        $scope.products = [
+            {isSelected:true,name:'iphone5s',price:2000,count:1,id:1},
+            {isSelected:false,name:'iphone6s',price:300,count:2,id:2},
+            {isSelected:true,name:'iphone7s',price:500,count:3,id:3},
+            {isSelected:true,name:'iphone4s',price:800,count:4,id:4},
+        ];
+        $scope.del = function (product) {
+            //拿到了当前的一个商品，去所有商品中移除掉  filter
+            $scope.products = $scope.products.filter(function (item) {
+                return item!=product;
+            });
+        };
+        //全选全不选
+        $scope.all = function () {
+            //alert($scope.selectAll); //因为ng-model的值定义到了当前作用域下
+            $scope.products.forEach(function (item) {
+                item.isSelected = $scope.selectAll;
+            });
+        };
+        //作业:点击下面的checkbox,假设法，默认为全选，遍历每一个商品，有一个没选中，就为非全选状态 （find）
+    }]);
+</script>
+</body>
+</html>
